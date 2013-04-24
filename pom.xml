@@ -1,0 +1,243 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.xiam</groupId>
+	<artifactId>fred</artifactId>
+	<version>1.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>fred</name>
+	<url>http://maven.apache.org</url>
+
+	<description>
+  	${project.artifactId} project is from ${project.name} 
+  	and url is ${project.url}
+  </description>
+
+	<distributionManagement>
+		<repository>
+			<id>localhost_nexus_releases</id>
+			<name>Nexus server on localhost</name>
+			<url>http://localhost:9992/nexus/content/repositories/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>localhost_nexus_snapshots</id>
+			<name>Nexus server on localhost for snapshots</name>
+			<url>http://localhost:9992/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<jo.role>Release Engineer</jo.role>
+		<db.user>jnic</db.user>
+		<db.password>secret</db.password>
+		<db.url>http://localhost:9000</db.url>
+		<db.driver>com.oracle.Driver</db.driver>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>14.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.solovyev</groupId>
+			<artifactId>common-core-jodatime</artifactId>
+			<version>1.0.3</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<defaultGoal>install</defaultGoal>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<filtering>true</filtering>
+			</testResource>
+		</testResources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>2.14.1</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
+				<configuration>
+					<target name="default_ops">
+						<echo message="running ant" />
+					</target>
+				</configuration>
+				<executions>
+					<execution>
+						<id>clean_message</id>
+						<phase>clean</phase>
+						<configuration>
+							<target name="clean_ops">
+								<echo message="Cleaning ${project.name}" />
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>compile_message</id>
+						<phase>compile</phase>
+						<configuration>
+							<target name="compile_ops">
+								<echo message="Compiling project: ${project.name}" />
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.4</version>
+				<executions>
+					<execution>
+						<id>all_in_one_package</id>
+						<phase>package</phase>
+						<configuration>
+							<descriptorRefs>
+								<descriptorRef>jar-with-dependencies</descriptorRef>
+							</descriptorRefs>
+						</configuration>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.2</version>
+				<configuration>
+					<reportPlugins>
+						<plugin>
+							<artifactId>maven-project-info-reports-plugin</artifactId>
+							<version>2.6</version>
+							<reports>
+								<report>index</report>
+								<report>dependencies</report>
+							</reports>
+						</plugin>
+						<!-- plugin> <artifactId>maven-javadoc-plugin</artifactId> <version>2.9</version> 
+							</plugin -->
+						<plugin>
+							<artifactId>maven-checkstyle-plugin</artifactId>
+							<version>2.10</version>
+						</plugin>
+						<plugin>
+							<groupId>org.codehaus.mojo</groupId>
+							<artifactId>cobertura-maven-plugin</artifactId>
+							<version>2.5.2</version>
+						</plugin>
+					</reportPlugins>
+				</configuration>
+			</plugin>
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-antrun-plugin
+										</artifactId>
+										<versionRange>
+											[1.7,)
+										</versionRange>
+										<goals>
+											<goal>run</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>production</id>
+			<properties>
+				<db.url>http://localhost:9090/mystuff</db.url>
+				<db.driver>com.driver.DRIVER</db.driver>
+			</properties>
+		</profile>
+		<profile>
+			<id>windows-qa</id>
+			<activation>
+				<os>
+					<name>Windows 7</name>
+				</os>
+			</activation>
+			<properties>
+				<db.url>windows.url.value</db.url>
+			</properties>
+		</profile>
+	</profiles>
+
+	<organization>
+		<name>Xiam Qualcomm </name>
+		<url>http://www.xiam.com</url>
+	</organization>
+	<developers>
+		<developer>
+			<id>jnic</id>
+			<name>Jo Ni Choisdealbha</name>
+			<roles>
+				<role>${jo.role}</role>
+			</roles>
+		</developer>
+	</developers>
+</project>
