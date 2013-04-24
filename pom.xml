@@ -15,6 +15,13 @@
   	and url is ${project.url}
   </description>
 
+<scm>
+	<developerConnection>
+		scm:git:git@github.com/xjnic/fred.git
+	</developerConnection>
+	<tag>HEAD</tag>
+</scm>
+
 	<distributionManagement>
 		<repository>
 			<id>localhost_nexus_releases</id>
